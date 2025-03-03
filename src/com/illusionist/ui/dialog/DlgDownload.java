@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -113,7 +114,20 @@ public class DlgDownload extends JDialog {
 
     private void onOK() {
         dialogResult = true;
-        dispose();
+
+        File dlFile = Paths.get(getDirectory(), getFilename()).toFile();
+
+        if(dlFile.exists()) {
+            // Prompt it here
+            int option = JOptionPane.showConfirmDialog(
+                    contentPane, "File already exists overwrite?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+            if(option == JOptionPane.NO_OPTION)
+                dialogResult = false;
+        }
+
+        if(dialogResult)
+            dispose();
     }
 
     private void onCancel() {

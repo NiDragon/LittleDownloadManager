@@ -1,11 +1,6 @@
-import com.illusionist.network.DataReceiveListener;
-import com.illusionist.network.FileDownloader;
 import com.illusionist.ui.MainWindow;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {

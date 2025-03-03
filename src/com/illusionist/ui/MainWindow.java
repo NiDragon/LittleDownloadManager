@@ -122,7 +122,6 @@ public final class MainWindow extends JFrame {
         JMenuItem pauseItem = new JMenuItem("Pause");
 
         JMenuItem stopItem = new JMenuItem("Stop");
-        stopItem.setEnabled(false);
 
         JMenuItem showItem = new JMenuItem("Show In Folder");
 
@@ -161,10 +160,32 @@ public final class MainWindow extends JFrame {
         });
 
         stopItem.addActionListener((ActionEvent e) -> {
-            FileDownloader dl = getDownloaderFromIndex(downloadTable.getSelectedRow());
+            int rowIndex = downloadTable.getSelectedRow();
+            FileDownloader dl = getDownloaderFromIndex(rowIndex);
 
             if(dl != null) {
-                dl.stop();
+                int status = dl.getDownloadStatus();
+                int downloadId = (int)dl.getUserData();
+
+                if(status == FileDownloader.RUNNING || status == FileDownloader.PAUSED) {
+                    dl.stop();
+                } else {
+                    int removeIndex = -1;
+
+                    for(int i = 0; i < downloadList.size(); i++) {
+                        int currentId = (int)downloadList.get(i).getUserData();
+
+                        if(currentId == downloadId) {
+                            removeIndex = i;
+                            break;
+                        }
+                    }
+
+                    downloadTableData.removeRow(rowIndex);
+
+                    if(removeIndex != -1)
+                        downloadList.remove(removeIndex);
+                }
             }
         });
 
@@ -432,15 +453,15 @@ public final class MainWindow extends JFrame {
                         FileDownloader dl = getDownloaderFromIndex(rowAtPoint);
 
                         if(dl != null) {
-                            stopItem.setEnabled(true);
-
                             if (dl.getDownloadStatus() == FileDownloader.RUNNING) {
                                 pauseItem.setText("Pause");
+                                stopItem.setText("Stop");
                             } else if (dl.getDownloadStatus() == FileDownloader.PAUSED) {
                                 pauseItem.setText("Resume");
+                                stopItem.setText("Stop");
                             } else {
                                 pauseItem.setText("Restart");
-                                stopItem.setEnabled(false);
+                                stopItem.setText("Remove");
                             }
                         }
 

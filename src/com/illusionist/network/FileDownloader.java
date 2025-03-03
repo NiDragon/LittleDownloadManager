@@ -289,7 +289,7 @@ public class FileDownloader {
 
                     if (downloadState.get() == PAUSED) {
                         while (downloadState.get() == PAUSED) {
-                            Thread.sleep(10);
+                            Thread.sleep(100);
                         }
                     }
 
