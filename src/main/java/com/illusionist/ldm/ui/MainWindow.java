@@ -35,7 +35,7 @@ public final class MainWindow extends MainWindowUI {
     private final int ETA_COLUMN = 4;
 
     private int availableId = 1;
-    DefaultTableModel downloadTableData;
+    private final DefaultTableModel downloadTableData;
 
     public MainWindow() {
         super("Little Download Manager");

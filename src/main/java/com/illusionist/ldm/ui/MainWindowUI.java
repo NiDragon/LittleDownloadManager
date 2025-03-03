@@ -9,6 +9,7 @@ public class MainWindowUI extends JFrame {
     protected JScrollPane JScrollPane1;
 
     public MainWindowUI(String title) {
+        super(title);
     }
 
     {
