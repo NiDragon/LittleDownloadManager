@@ -14,19 +14,7 @@ import java.net.URISyntaxException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
-public class DlgDownload extends JDialog {
-    private JPanel contentPane;
-    private JButton buttonDownload;
-    private JButton buttonCancel;
-    private JTextField urlField;
-    private JTextField pathField;
-    private JButton buttonBrowse;
-    private JCheckBox startDownloadPausedCheckBox;
-    private JTextField nameField;
-    private JButton buttonPaste;
-    private JCheckBox useSHA1CheckBox;
-    private JTextField sha1Field;
-
+public class DlgDownload extends DlgDownloadUI {
     private boolean dialogResult = false;
 
     public DlgDownload() {
@@ -107,16 +95,16 @@ public class DlgDownload extends JDialog {
 
         File dlFile = Paths.get(getDirectory(), getFilename()).toFile();
 
-        if(dlFile.exists()) {
+        if (dlFile.exists()) {
             // Prompt it here
             int option = JOptionPane.showConfirmDialog(
                     contentPane, "File already exists overwrite?", "Confirm", JOptionPane.YES_NO_OPTION);
 
-            if(option == JOptionPane.NO_OPTION)
+            if (option == JOptionPane.NO_OPTION)
                 dialogResult = false;
         }
 
-        if(dialogResult)
+        if (dialogResult)
             dispose();
     }
 
@@ -130,8 +118,7 @@ public class DlgDownload extends JDialog {
         chooser.setDialogTitle("Select Download Location");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        if(chooser.showDialog(this, "Select") == JFileChooser.APPROVE_OPTION)
-        {
+        if (chooser.showDialog(this, "Select") == JFileChooser.APPROVE_OPTION) {
             pathField.setText(chooser.getSelectedFile().getPath());
         }
     }

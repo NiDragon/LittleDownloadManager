@@ -25,16 +25,13 @@ import java.util.*;
 import static com.illusionist.ldm.util.StringFormatUtil.bytesToString;
 import static com.illusionist.ldm.util.StringFormatUtil.secondsToTime;
 
-public final class MainWindow extends JFrame {
+public final class MainWindow extends MainWindowUI {
 
     public final ArrayList<FileDownloader> downloadList = new ArrayList<>();
 
-    private JPanel contentPane;
-    private JTable downloadTableView;
-
     private final int ID_COLUMN = 0;
     private final int STATUS_COLUMN = 2;
-    private final int DOWNSPEED_COLUMN = 3;
+    private final int SPEED_COLUMN = 3;
     private final int ETA_COLUMN = 4;
 
     private int availableId = 1;
@@ -79,11 +76,11 @@ public final class MainWindow extends JFrame {
 
         // Center cells 0, 3 and 4
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
-        downloadTableView.getColumnModel().getColumn(ID_COLUMN).setCellRenderer( centerRenderer );
-        downloadTableView.getColumnModel().getColumn(DOWNSPEED_COLUMN).setCellRenderer( centerRenderer );
-        downloadTableView.getColumnModel().getColumn(ETA_COLUMN).setCellRenderer( centerRenderer );
+        downloadTableView.getColumnModel().getColumn(ID_COLUMN).setCellRenderer(centerRenderer);
+        downloadTableView.getColumnModel().getColumn(SPEED_COLUMN).setCellRenderer(centerRenderer);
+        downloadTableView.getColumnModel().getColumn(ETA_COLUMN).setCellRenderer(centerRenderer);
 
         JPopupMenu downloadPopup = getPopupMenu(downloadTableView);
 
@@ -93,11 +90,10 @@ public final class MainWindow extends JFrame {
     }
 
     private void stopDownloading() {
-        for(FileDownloader download : downloadList) {
+        for (FileDownloader download : downloadList) {
             int status = download.getDownloadStatus();
 
-            if(status == FileDownloader.RUNNING || status == FileDownloader.PAUSED)
-            {
+            if (status == FileDownloader.RUNNING || status == FileDownloader.PAUSED) {
                 download.stop();
             }
         }
@@ -106,10 +102,10 @@ public final class MainWindow extends JFrame {
     private int getNumActiveDownloads() {
         int numActiveDownloads = 0;
 
-        for(FileDownloader download : downloadList) {
+        for (FileDownloader download : downloadList) {
             int status = download.getDownloadStatus();
 
-            if(status == FileDownloader.RUNNING || status == FileDownloader.PAUSED)
+            if (status == FileDownloader.RUNNING || status == FileDownloader.PAUSED)
                 numActiveDownloads++;
         }
 
@@ -130,16 +126,12 @@ public final class MainWindow extends JFrame {
         pauseItem.addActionListener((ActionEvent e) -> {
             FileDownloader dl = getDownloaderFromIndex(downloadTable.getSelectedRow());
 
-            if(dl != null) {
-                if(dl.getDownloadStatus() == FileDownloader.RUNNING)
-                {
+            if (dl != null) {
+                if (dl.getDownloadStatus() == FileDownloader.RUNNING) {
                     dl.pause();
-                }
-                else if(dl.getDownloadStatus() == FileDownloader.PAUSED)
-                {
+                } else if (dl.getDownloadStatus() == FileDownloader.PAUSED) {
                     dl.start();
-                }
-                else {
+                } else {
                     // Try and restart the download
                     dl.start();
                 }
@@ -149,8 +141,8 @@ public final class MainWindow extends JFrame {
         showItem.addActionListener((ActionEvent e) -> {
             FileDownloader dl = getDownloaderFromIndex(downloadTable.getSelectedRow());
 
-            if(dl != null) {
-                File file = new File (dl.getFilePath()).getParentFile();
+            if (dl != null) {
+                File file = new File(dl.getFilePath()).getParentFile();
                 Desktop desktop = Desktop.getDesktop();
                 try {
                     desktop.open(file);
@@ -164,19 +156,19 @@ public final class MainWindow extends JFrame {
             int rowIndex = downloadTable.getSelectedRow();
             FileDownloader dl = getDownloaderFromIndex(rowIndex);
 
-            if(dl != null) {
+            if (dl != null) {
                 int status = dl.getDownloadStatus();
-                int downloadId = (int)dl.getUserData();
+                int downloadId = (int) dl.getUserData();
 
-                if(status == FileDownloader.RUNNING || status == FileDownloader.PAUSED) {
+                if (status == FileDownloader.RUNNING || status == FileDownloader.PAUSED) {
                     dl.stop();
                 } else {
                     int removeIndex = -1;
 
-                    for(int i = 0; i < downloadList.size(); i++) {
-                        int currentId = (int)downloadList.get(i).getUserData();
+                    for (int i = 0; i < downloadList.size(); i++) {
+                        int currentId = (int) downloadList.get(i).getUserData();
 
-                        if(currentId == downloadId) {
+                        if (currentId == downloadId) {
                             removeIndex = i;
                             break;
                         }
@@ -184,7 +176,7 @@ public final class MainWindow extends JFrame {
 
                     downloadTableData.removeRow(rowIndex);
 
-                    if(removeIndex != -1)
+                    if (removeIndex != -1)
                         downloadList.remove(removeIndex);
                 }
             }
@@ -212,7 +204,7 @@ public final class MainWindow extends JFrame {
             File file = new File(filepath);
 
             // If this path does not exist or is not a file fail
-            if(!file.exists() || !file.isFile())
+            if (!file.exists() || !file.isFile())
                 return false;
 
             try (FileInputStream inputStream = new FileInputStream(file)) {
@@ -222,18 +214,16 @@ public final class MainWindow extends JFrame {
                 long fileSizeInBytes = file.length();
                 byte[] buffer = new byte[16384];
 
-                while(bytesRead != -1)
-                {
+                while (bytesRead != -1) {
                     bytesRead = inputStream.read(buffer);
 
-                    if(bytesRead > 0) {
+                    if (bytesRead > 0) {
                         md.update(buffer, 0, bytesRead);
                         totalBytesRead += bytesRead;
                     }
 
-                    if(rowIndex != -1)
-                    {
-                        long percent = (long)(((double)totalBytesRead / (double)fileSizeInBytes) * 100);
+                    if (rowIndex != -1) {
+                        long percent = (long) (((double) totalBytesRead / (double) fileSizeInBytes) * 100);
                         updateCell(rowIndex, STATUS_COLUMN, String.format("Verifying:%d", percent));
                     }
                 }
@@ -241,7 +231,7 @@ public final class MainWindow extends JFrame {
                 byte[] hashBytes = md.digest();
                 String computedHash = HexFormat.of().formatHex(hashBytes);
 
-                if(hash.equalsIgnoreCase(computedHash))
+                if (hash.equalsIgnoreCase(computedHash))
                     result = true;
             }
 
@@ -285,14 +275,14 @@ public final class MainWindow extends JFrame {
             downloader.setOnDownloadCompleted((ActionEvent ex) -> {
                 int rowIndex = getRowIndex(downloadId);
 
-                updateCell(rowIndex, DOWNSPEED_COLUMN, "");
+                updateCell(rowIndex, SPEED_COLUMN, "");
                 updateCell(rowIndex, ETA_COLUMN, "");
 
-                if(dialog.getVerify()) {
+                if (dialog.getVerify()) {
 
                     updateCell(rowIndex, STATUS_COLUMN, "Verifying:-1");
 
-                    if(verifyDownload(downloader.getFilePath(), dialog.getSHA1(), rowIndex)) {
+                    if (verifyDownload(downloader.getFilePath(), dialog.getSHA1(), rowIndex)) {
                         updateCell(rowIndex, STATUS_COLUMN, "Complete:-1");
                     } else {
                         updateCell(rowIndex, STATUS_COLUMN, "Checksum Failed!:-1");
@@ -306,7 +296,7 @@ public final class MainWindow extends JFrame {
                 int rowIndex = getRowIndex(downloadId);
 
                 updateCell(rowIndex, ETA_COLUMN, "∞");
-                updateCell(rowIndex, DOWNSPEED_COLUMN, "0 B/s");
+                updateCell(rowIndex, SPEED_COLUMN, "0 B/s");
                 updateCell(rowIndex, STATUS_COLUMN, "Paused:-2");
             });
 
@@ -314,7 +304,7 @@ public final class MainWindow extends JFrame {
                 int rowIndex = getRowIndex(downloadId);
 
                 updateCell(rowIndex, ETA_COLUMN, "");
-                updateCell(rowIndex, DOWNSPEED_COLUMN, "");
+                updateCell(rowIndex, SPEED_COLUMN, "");
                 updateCell(rowIndex, STATUS_COLUMN, "Stopped:-1");
             });
 
@@ -328,10 +318,10 @@ public final class MainWindow extends JFrame {
                 public void onDataReceive(FileDownloader source, long bytesRecv, long bytesTotal) {
                     int rowIndex = getRowIndex(downloadId);
 
-                    int percent = (int)(((double)bytesRecv / (double)bytesTotal) * 100);
+                    int percent = (int) (((double) bytesRecv / (double) bytesTotal) * 100);
 
                     // Calculate a time here...
-                    if(Duration.between(lastTime[0], Instant.now()).getSeconds() > 0) {
+                    if (Duration.between(lastTime[0], Instant.now()).getSeconds() > 0) {
                         lastTime[0] = Instant.now();
 
                         bytesPerSecond[0] = bytesRecv - bytesPerSecond[1];
@@ -342,13 +332,13 @@ public final class MainWindow extends JFrame {
                         long bytesLeft = bytesTotal - bytesRecv;
 
                         // use our bytesPerSecond[0] to determine how long this operation would take in sections
-                        if(bytesPerSecond[0] != 0) {
+                        if (bytesPerSecond[0] != 0) {
                             long seconds = bytesLeft / bytesPerSecond[0];
 
-                            updateCell(rowIndex, DOWNSPEED_COLUMN, bytesToString(bytesPerSecond[0]));
+                            updateCell(rowIndex, SPEED_COLUMN, bytesToString(bytesPerSecond[0]));
                             updateCell(rowIndex, ETA_COLUMN, secondsToTime(seconds));
                         } else {
-                            updateCell(rowIndex, DOWNSPEED_COLUMN, bytesToString(0));
+                            updateCell(rowIndex, SPEED_COLUMN, bytesToString(0));
                             updateCell(rowIndex, ETA_COLUMN, "∞");
                         }
                     }
@@ -381,7 +371,7 @@ public final class MainWindow extends JFrame {
         int downloadId = (int) downloadTableData.getValueAt(rowIndex, ID_COLUMN);
 
         for (FileDownloader fileDownloader : downloadList) {
-            int id = (int)fileDownloader.getUserData();
+            int id = (int) fileDownloader.getUserData();
 
             if (id == downloadId)
                 return fileDownloader;
@@ -394,43 +384,52 @@ public final class MainWindow extends JFrame {
         downloadTableData.setValueAt(value, row, column);
     }
 
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+    }
+
     private class MainWindowListener implements WindowListener {
         @Override
-        public void windowOpened(WindowEvent e) {}
+        public void windowOpened(WindowEvent e) {
+        }
 
         @Override
         public void windowClosing(WindowEvent e) {
-            if(getNumActiveDownloads() > 0) {
+            if (getNumActiveDownloads() > 0) {
                 int option = JOptionPane.showConfirmDialog(
                         contentPane, "There are incomplete downloads are you sure you want to exit?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
 
-                if(option == JOptionPane.YES_OPTION){
+                if (option == JOptionPane.YES_OPTION) {
                     stopDownloading();
                     setDefaultCloseOperation(EXIT_ON_CLOSE);//yes
 
                 } else {
                     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);//no
                 }
-            }
-            else {
+            } else {
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
             }
         }
 
         @Override
-        public void windowClosed(WindowEvent e) {}
+        public void windowClosed(WindowEvent e) {
+        }
 
         @Override
-        public void windowIconified(WindowEvent e) {}
+        public void windowIconified(WindowEvent e) {
+        }
 
         @Override
-        public void windowDeiconified(WindowEvent e) {}
+        public void windowDeiconified(WindowEvent e) {
+        }
 
         @Override
-        public void windowActivated(WindowEvent e) {}
+        public void windowActivated(WindowEvent e) {
+        }
 
         @Override
-        public void windowDeactivated(WindowEvent e) {}
+        public void windowDeactivated(WindowEvent e) {
+        }
     }
 
     private class DownloadMenuListener implements PopupMenuListener {
@@ -456,7 +455,7 @@ public final class MainWindow extends JFrame {
                     if (rowAtPoint > -1) {
                         FileDownloader dl = getDownloaderFromIndex(rowAtPoint);
 
-                        if(dl != null) {
+                        if (dl != null) {
                             if (dl.getDownloadStatus() == FileDownloader.RUNNING) {
                                 pauseItem.setText("Pause");
                                 stopItem.setText("Stop");
