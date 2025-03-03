@@ -1,11 +1,7 @@
-package com.illusionist.ui.renderer;
-
-import com.illusionist.network.FileDownloader;
+package com.illusionist.ldm.ui.renderer;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.awt.*;
 
 public class DownloadTableCellRenderer extends JProgressBar implements TableCellRenderer {

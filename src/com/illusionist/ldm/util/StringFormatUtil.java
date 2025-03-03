@@ -1,4 +1,4 @@
-package com.illusionist.util;
+package com.illusionist.ldm.util;
 
 public class StringFormatUtil {
     public static String secondsToTime(long totalSeconds) {

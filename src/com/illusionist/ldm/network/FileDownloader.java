@@ -1,4 +1,4 @@
-package com.illusionist.network;
+package com.illusionist.ldm.network;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

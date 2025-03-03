@@ -1,4 +1,6 @@
-import com.illusionist.ui.MainWindow;
+package com.illusionist.ldm;
+
+import com.illusionist.ldm.ui.MainWindow;
 
 import javax.swing.*;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or

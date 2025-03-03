@@ -1,9 +1,9 @@
-package com.illusionist.ui;
+package com.illusionist.ldm.ui;
 
-import com.illusionist.network.DataReceiveListener;
-import com.illusionist.network.FileDownloader;
-import com.illusionist.ui.dialog.DlgDownload;
-import com.illusionist.ui.renderer.DownloadTableCellRenderer;
+import com.illusionist.ldm.network.DataReceiveListener;
+import com.illusionist.ldm.network.FileDownloader;
+import com.illusionist.ldm.ui.dialog.DlgDownload;
+import com.illusionist.ldm.ui.renderer.DownloadTableCellRenderer;
 
 import javax.swing.*;
 import javax.swing.event.PopupMenuEvent;
@@ -22,8 +22,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-import static com.illusionist.util.StringFormatUtil.bytesToString;
-import static com.illusionist.util.StringFormatUtil.secondsToTime;
+import static com.illusionist.ldm.util.StringFormatUtil.bytesToString;
+import static com.illusionist.ldm.util.StringFormatUtil.secondsToTime;
 
 public final class MainWindow extends JFrame {
 

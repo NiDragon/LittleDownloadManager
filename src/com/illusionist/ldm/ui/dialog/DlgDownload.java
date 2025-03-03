@@ -1,4 +1,4 @@
-package com.illusionist.ui.dialog;
+package com.illusionist.ldm.ui.dialog;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
