@@ -53,6 +53,7 @@ public final class MainWindow extends JFrame {
         addItem.addActionListener(this::addDownload);
 
         JMenuItem exitItem = new JMenuItem("Exit");
+        //noinspection CodeBlock2Expr
         exitItem.addActionListener((ActionEvent e) -> {
             dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         });
@@ -251,6 +252,7 @@ public final class MainWindow extends JFrame {
         return result;
     }
 
+    @SuppressWarnings("unused")
     private boolean verifyDownload(String filepath, String hash) {
         return verifyDownload(filepath, hash, -1);
     }
@@ -320,6 +322,7 @@ public final class MainWindow extends JFrame {
             final long[] bytesPerSecond = {0, 0};
             final Instant[] lastTime = {Instant.now()};
 
+            //noinspection Convert2Lambda
             downloader.setOnDataRecv(new DataReceiveListener() {
                 @Override
                 public void onDataReceive(FileDownloader source, long bytesRecv, long bytesTotal) {
@@ -445,6 +448,7 @@ public final class MainWindow extends JFrame {
 
         @Override
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+            //noinspection Convert2Lambda
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {

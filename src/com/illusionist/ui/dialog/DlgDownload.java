@@ -55,9 +55,10 @@ public class DlgDownload extends JDialog {
             }
         });
 
+        //noinspection Convert2Lambda
         buttonPaste.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String data = null;
+                String data;
                 try {
                     data = (String) Toolkit.getDefaultToolkit()
                             .getSystemClipboard().getData(DataFlavor.stringFlavor);
@@ -70,23 +71,11 @@ public class DlgDownload extends JDialog {
             }
         });
 
-        buttonDownload.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        buttonDownload.addActionListener(e -> onOK());
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
+        buttonCancel.addActionListener(e -> onCancel());
 
-        buttonBrowse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onBrowse();
-            }
-        });
+        buttonBrowse.addActionListener(e -> onBrowse());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -97,6 +86,7 @@ public class DlgDownload extends JDialog {
         });
 
         // call onCancel() on ESCAPE
+        //noinspection Convert2Lambda
         contentPane.registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
